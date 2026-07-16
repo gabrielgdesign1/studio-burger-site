@@ -5,19 +5,6 @@
 const imgUrl = (hash, w) => IMG_BASE.replace('{w}', 'w_' + w) + hash;
 const fmtPrice = (p) => 'R$ ' + p;
 
-const CAT_ICONS = {
-  'Destaques': '⭐',
-  'Copa do Mundo': '⚽',
-  'Pratos Almoço': '🍛',
-  'Happy Hour': '🍻',
-  'Entradas': '🍟',
-  'Burgers': '🍔',
-  'Bebidas': '🥤',
-  'Bebidas Alcoólicas': '🍺',
-  'Drinks': '🍹',
-  'Sobremesas': '🍰',
-};
-
 /* ---------- Destaques (carrossel horizontal) ---------- */
 const highlightsEl = document.getElementById('highlights');
 (MENU['Destaques'] || []).forEach((item) => {
@@ -46,7 +33,7 @@ let activeCat = 'Burgers';
 CATEGORIES.forEach((cat) => {
   const btn = document.createElement('button');
   btn.className = 'tab' + (cat === activeCat ? ' active' : '');
-  btn.innerHTML = `<span>${CAT_ICONS[cat] || ''}</span>${cat}`;
+  btn.textContent = cat;
   btn.addEventListener('click', () => {
     activeCat = cat;
     searchEl.value = '';
@@ -83,7 +70,7 @@ function renderMenu() {
     : `${items.length} itens em ${activeCat}`;
 
   if (!items.length) {
-    gridEl.innerHTML = `<p class="menu-empty">Nenhum item encontrado. 😢<br/>Tente buscar por outro termo!</p>`;
+    gridEl.innerHTML = `<p class="menu-empty">Nenhum item encontrado.<br/>Tente buscar por outro termo!</p>`;
     return;
   }
 
@@ -123,6 +110,16 @@ searchEl.addEventListener('input', () => {
 });
 
 renderMenu();
+
+/* ---------- Setas do carrossel de destaques ---------- */
+const hlScroll = (dir) => {
+  const card = highlightsEl.querySelector('.hl-card');
+  if (!card) return;
+  const step = card.getBoundingClientRect().width + 24; // largura do card + gap
+  highlightsEl.scrollBy({ left: dir * step, behavior: 'smooth' });
+};
+document.getElementById('hlPrev').addEventListener('click', () => hlScroll(-1));
+document.getElementById('hlNext').addEventListener('click', () => hlScroll(1));
 
 /* ---------- Header scroll ---------- */
 const header = document.getElementById('header');
